@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test Quiz</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f0f0f0;
+      }
+      .quiz-container {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 600px;
+      }
+      .question {
+        font-size: 1.5em;
+        margin-bottom: 20px;
+      }
+      .options {
+        list-style-type: none;
+        padding: 0;
+      }
+      .options li {
+        margin: 10px 0;
+      }
+      button {
+        background-color: #4caf50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+      #result {
+        display: none;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="quiz-container">
+      <div class="question" id="question"></div>
+      <ul class="options" id="options"></ul>
+      <button id="nextButton" onclick="nextQuestion()">Next</button>
+      <div id="result"></div>
+    </div>
+
+    <script>
+      let currentQuestionIndex = 0;
+      let score = 0;
+      let questions = [];
+
+      // Google Sheets API URL
+      const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR_hplf6Jtaw5MS0sph75vuG3wXNttkccZ_ywoSfmIHaf4jnw5QGZUdX4RG3maTfPHrxRTr_sMRYqbK/pubhtml"; // Replace with your Google Sheets public URL
+
+      // Fetch the data from Google Sheets
+      fetch(sheetURL)
+        .then((response) => response.json())
+        .then((data) => {
+          questions = data.feed.entry.map((entry) => {
+            return {
+              question: entry.gsx$question.$t,
+              options: [
+                entry.gsx$optiona.$t,
+                entry.gsx$optionb.$t,
+                entry.gsx$optionc.$t,
+                entry.gsx$optiond.$t,
+              ],
+              correctAnswer: entry.gsx$correctanswer.$t,
+            };
+          });
+          showQuestion();
+        });
+
+      function showQuestion() {
+        if (currentQuestionIndex < questions.length) {
+          const question = questions[currentQuestionIndex];
+          document.getElementById("question").textContent = question.question;
+          document.getElementById("options").innerHTML = question.options
+            .map((option, index) => {
+              return `<li><input type="radio" name="option" value="${String.fromCharCode(65 + index)}"> ${option}</li>`;
+            })
+            .join("");
+          document.getElementById("nextButton").style.display = "none"; // Hide next button initially
+        } else {
+          showResult();
+        }
+      }
+
+      function nextQuestion() {
+        const selectedOption = document.querySelector('input[name="option"]:checked');
+        if (selectedOption) {
+          const correctAnswer = questions[currentQuestionIndex].correctAnswer;
+          if (selectedOption.value === correctAnswer) {
+            score++;
+          }
+          currentQuestionIndex++;
+          showQuestion();
+        } else {
+          alert("Please select an option.");
+        }
+      }
+
+      function showResult() {
+        document.getElementById("result").style.display = "block";
+        document.getElementById("result").textContent = `You scored ${score} out of ${questions.length}.`;
+        document.getElementById("nextButton").style.display = "none"; // Hide next button after test completion
+      }
+    </script>
+  </body>
+</html>
