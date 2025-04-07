@@ -1,13 +1,118 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="uz">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Test Sahifa</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Interaktiv Test</title>
+  <style>
+    body { font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; }
+    .question-card { border: 1px solid #ccc; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+    .choices label { display: block; margin-bottom: 8px; }
+    .nav-buttons, .submit-btn { margin-top: 20px; }
+    button { padding: 10px 20px; margin: 5px; font-size: 16px; }
+    #result { font-weight: bold; margin-top: 20px; font-size: 18px; }
+  </style>
 </head>
-<body style="font-family: sans-serif; text-align: center; padding: 50px;">
-  <h1>? Salom!</h1>
-  <p>Test sahifasi muvaffaqiyatli ishlayapti.</p>
+<body>
+  <h1>?? Interaktiv Test</h1>
+  <div id="quiz"></div>
+  <div class="nav-buttons">
+    <button onclick="prevQuestion()">? Orqaga</button>
+    <button onclick="nextQuestion()">? Keyingi</button>
+  </div>
+  <div class="submit-btn">
+    <button onclick="submitQuiz()">? Yakunlash</button>
+  </div>
+  <div id="result"></div>
+
+  <script>
+    const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR_hplf6Jtaw5MS0sph75vuG3wXNttkccZ_ywoSfmIHaf4jnw5QGZUdX4RG3maTfPHrxRTr_sMRYqbK/pub?output=csv';
+
+    let questions = [];
+    let currentQuestionIndex = 0;
+    let userAnswers = [];
+
+    async function loadCSV(url) {
+      const res = await fetch(url);
+      const data = await res.text();
+      const rows = data.trim().split('\n').map(row => row.split(','));
+      const headers = rows.shift();
+      return rows.map(row => {
+        const obj = {};
+        headers.forEach((h, i) => obj[h.trim()] = row[i].trim());
+        return obj;
+      });
+    }
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    async function init() {
+      let data = await loadCSV(SHEET_URL);
+      questions = shuffle(data).slice(0, 20);
+      userAnswers = Array(questions.length).fill(null);
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      const q = questions[currentQuestionIndex];
+      let html = `<div class="question-card">
+        <h2>${currentQuestionIndex + 1}. ${q['Savol']}</h2>
+        <div class="choices">`;
+      ['A', 'B', 'C', 'D'].forEach(opt => {
+        const id = `q${currentQuestionIndex}_${opt}`;
+        const checked = userAnswers[currentQuestionIndex] === opt ? 'checked' : '';
+        html += `
+          <label>
+            <input type="radio" name="q${currentQuestionIndex}" value="${opt}" onchange="saveAnswer('${opt}')" ${checked}>
+            ${opt}: ${q[opt]}
+          </label>`;
+      });
+      html += `</div></div>`;
+      document.getElementById('quiz').innerHTML = html;
+    }
+
+    function saveAnswer(option) {
+      userAnswers[currentQuestionIndex] = option;
+    }
+
+    function nextQuestion() {
+      if (currentQuestionIndex < questions.length - 1) {
+        currentQuestionIndex++;
+        renderQuestion();
+      }
+    }
+
+    function prevQuestion() {
+      if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        renderQuestion();
+      }
+    }
+
+    function submitQuiz() {
+      let correct = 0;
+      questions.forEach((q, i) => {
+        if (userAnswers[i] === q['To‘g‘ri javob']) {
+          correct++;
+        }
+      });
+      let incorrect = questions.length - correct;
+      document.getElementById('result').innerText = 
+        `Siz ${questions.length} ta savoldan ${correct} tasini to‘g‘ri topdingiz.\n` +
+        `${incorrect} ta savol noto‘g‘ri yechilgan.\n` +
+        `Umumiy ball: ${correct} ball.`;
+      document.getElementById('quiz').style.display = 'none';
+      document.querySelector('.nav-buttons').style.display = 'none';
+      document.querySelector('.submit-btn').style.display = 'none';
+    }
+
+    init();
+  </script>
 </body>
 </html>
