@@ -36,7 +36,7 @@
                         questions.push({
                             question: cols[0],
                             options: cols.slice(1, 5),
-                            correct: cols[5].trim()
+                            correct: cols[5].trim().toUpperCase()
                         });
                     }
                 });
@@ -85,12 +85,18 @@
         function finishQuiz() {
             let correct = 0;
             answers.forEach((a, i) => {
-                if (a !== null && questions[i].options[a] === questions[i].correct) {
-                    correct++;
+                if (a !== null) {
+                    const selectedLetter = ['A', 'B', 'C', 'D'][a];
+                    if (selectedLetter === questions[i].correct) {
+                        correct++;
+                    }
                 }
             });
+            const incorrect = questions.length - correct;
             document.getElementById("result").innerText =
-                `Siz ${questions.length} ta savoldan ${correct} tasini to‘g‘ri topdingiz. Umumiy ball: ${correct} ball.`;
+                `Siz ${questions.length} ta savoldan ${correct} tasini to‘g‘ri topdingiz.\n` +
+                `${incorrect} ta savol noto‘g‘ri yechilgan.\n` +
+                `Umumiy ball: ${correct} ball.`;
         }
     </script>
 </body>
