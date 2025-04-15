@@ -2,22 +2,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>Kirish</title>
+  <meta charset="UTF-8" />
+  <title>Parol bilan kirish</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; margin-top: 100px; background-color: #f9f9f9; }
+    input { padding: 10px; font-size: 16px; }
+    button { padding: 10px 20px; font-size: 16px; margin-left: 10px; cursor: pointer; }
+    .box { background: white; padding: 40px; border-radius: 10px; box-shadow: 0 0 10px #ccc; display: inline-block; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Saytga kirish uchun parolni kiriting</h2>
+    <input type="password" id="password" placeholder="Parol..." />
+    <button onclick="checkPassword()">Kirish</button>
+    <p id="error" style="color: red;"></p>
+  </div>
+
   <script>
+    const correctPassword = "2025";
+    const redirectURL = "https://sites.google.com/d/1yg51sbK9SWmY_MArpwyHNpGNuIrhXehF/p/1a69S6qrlJhLzSJo2EVZj6FH-xfHzcyli/edit";
+
     function checkPassword() {
-      const input = document.getElementById("password").value;
-      if (input === "2025") {
-        window.location.href = "https://sites.google.com/d/1yg51sbK9SWmY_MArpwyHNpGNuIrhXehF/p/1a69S6qrlJhLzSJo2EVZj6FH-xfHzcyli/edit";
+      const userInput = document.getElementById("password").value;
+      if (userInput === correctPassword) {
+        window.location.href = redirectURL;
       } else {
-        alert("Parol noto‘g‘ri. Qaytadan urinib ko‘ring.");
+        document.getElementById("error").innerText = "Parol noto‘g‘ri!";
       }
     }
   </script>
-</head>
-<body style="font-family:sans-serif;text-align:center;margin-top:50px;">
-  <h2>Kirish uchun parol kiriting</h2>
-  <input type="password" id="password" placeholder="Parol">
-  <button onclick="checkPassword()">Kirish</button>
 </body>
 </html>
