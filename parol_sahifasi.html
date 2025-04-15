@@ -1,0 +1,23 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Kirish</title>
+  <script>
+    function checkPassword() {
+      const input = document.getElementById("password").value;
+      if (input === "2025") {
+        window.location.href = "https://sites.google.com/d/1yg51sbK9SWmY_MArpwyHNpGNuIrhXehF/p/1a69S6qrlJhLzSJo2EVZj6FH-xfHzcyli/edit";
+      } else {
+        alert("Parol noto‘g‘ri. Qaytadan urinib ko‘ring.");
+      }
+    }
+  </script>
+</head>
+<body style="font-family:sans-serif;text-align:center;margin-top:50px;">
+  <h2>Kirish uchun parol kiriting</h2>
+  <input type="password" id="password" placeholder="Parol">
+  <button onclick="checkPassword()">Kirish</button>
+</body>
+</html>
