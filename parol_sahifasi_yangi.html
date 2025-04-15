@@ -1,0 +1,64 @@
+
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <title>Parol bilan kirish</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    input {
+      padding: 10px;
+      font-size: 16px;
+      width: 200px;
+      margin-bottom: 15px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .error {
+      color: red;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Parolni kiriting</h2>
+    <input type="password" id="password" placeholder="Parol">
+    <br>
+    <button onclick="checkPassword()">Kirish</button>
+    <div class="error" id="error-message"></div>
+  </div>
+
+  <script>
+    function checkPassword() {
+      var password = document.getElementById("password").value;
+      if (password === "2025") {
+        window.location.href = "https://sites.google.com/view/eytvmelektron/kirish";
+      } else {
+        document.getElementById("error-message").innerText = "Parol noto‘g‘ri!";
+      }
+    }
+  </script>
+</body>
+</html>
